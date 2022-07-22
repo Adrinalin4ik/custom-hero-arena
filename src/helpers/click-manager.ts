@@ -1,9 +1,10 @@
 import { ExtendedObject3D } from "enable3d";
 import { EventEmitter } from "events";
-import { ArrowHelper, Intersection, Object3D, Raycaster, Vector2, Vector3, WebGLRenderer } from "three";
+import { ArrowHelper, Group, Intersection, Object3D, Raycaster, Vector2, Vector3, WebGLRenderer } from "three";
+import { CustomObject3D } from "../extensions/object3d";
 
 export interface ClickHelperParams {
-  objects: ExtendedObject3D[];
+  objects: (ExtendedObject3D | CustomObject3D | Group)[];
   camera: THREE.PerspectiveCamera;
   enabled?: boolean;
   renderer: WebGLRenderer;
@@ -21,7 +22,7 @@ export enum MouseBtn {
 }
 
 export class ClickHelper extends EventEmitter {
-  private objects: ExtendedObject3D[];
+  private objects: (ExtendedObject3D | CustomObject3D | Group)[] = [];
   private camera: THREE.PerspectiveCamera;
   private mouse = new Vector2();
   private renderer: WebGLRenderer;
@@ -30,16 +31,29 @@ export class ClickHelper extends EventEmitter {
   public arrow: ArrowHelper;
   constructor(config: ClickHelperParams) {
     super();
-    this.objects = config.objects;
+    this.prepareObjects(config.objects);
+    console.log(this.objects)
     this.camera = config.camera;
     this.renderer = config.renderer;
     this.arrow = new ArrowHelper(new Vector3(1, 0, 0), new Vector3(0, 20, 0), 100, 'blue');
     document.addEventListener('mousedown', this.onDocumentMouseMove.bind(this));
   }
 
+  prepareObjects(objects: (ExtendedObject3D | CustomObject3D | Group)[]) {
+    for (const object of objects as CustomObject3D[]) {
+      console.log(object.reflectOnClick)
+      if (object.reflectOnClick) {
+        this.objects.push(object);
+      }
+      if (object.children.length > 0) {
+        this.prepareObjects(object.children);
+      }
+    }
+  }
+
   onDocumentMouseMove(event: MouseEvent) {
     event.preventDefault();
-    console.log(this.renderer)
+    event.stopPropagation();
     this.mouse.x = ((event.clientX - this.renderer.domElement.offsetLeft) / this.renderer.domElement.width) * 2 - 1;
     this.mouse.y = -((event.clientY - this.renderer.domElement.offsetTop) / this.renderer.domElement.height) * 2 + 1;
 
@@ -48,12 +62,11 @@ export class ClickHelper extends EventEmitter {
     this.arrow.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
     var intersects = this.rayCaster.intersectObjects(this.objects, true);
     if (intersects.length > 0) {
-      const firstIntersection = intersects?.[0];
-      if (firstIntersection) {
-        this.emit('click', {
+      for (const intersection of intersects as Intersection<CustomObject3D>[]) {
+        this.emit('click', { 
           type: event.button === 2 ? MouseBtn.RIGHT : MouseBtn.LEFT,
-          point: firstIntersection?.point,
-          object: firstIntersection
+          point: intersection.point, 
+          object: intersection 
         });
       }
     }

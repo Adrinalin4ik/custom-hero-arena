@@ -16,7 +16,6 @@ export class Unit extends Entity {
 
 
   moveTo(point: THREE.Vector3) {
-    console.log(this)
     this.targetPoint.copy(new THREE.Vector3(point.x, this.position.y, point.z));
     this.lookAt(this.targetPoint);
     this.movementFlags.forward = true;
@@ -26,6 +25,7 @@ export class Unit extends Entity {
   updateMovement(diff: number) {
     if (this.movementFlags.forward) {
       this.translateZ(0.01 * diff);
+      // this.body.applyForceZ(0.01 * diff)
     }
 
     if (this.position.distanceTo(this.targetPoint) < 0.1) {
