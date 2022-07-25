@@ -40,7 +40,6 @@ export class PreparationZone extends THREE.Group {
       // const mixer = scene.animationMixers.create(obj.scene);
       console.log(obj)
       // mixer.clipAction(obj.animations[0]).play();
-
       
       this.add(obj.scene);
     });

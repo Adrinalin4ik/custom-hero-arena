@@ -45,7 +45,7 @@ export class MainScene extends Scene3D {
     // const camera = this.camera as PerspectiveCamera;
     // set up scene (light, ground, grid, sky, orbitControls)
     // this.warpSpeed()
-    console.log(this)
+    // console.log(this)
     this.warpSpeed('camera', '-fog', 'sky', '-light', '-ground')
 
     this.mouseCamera = new MouseCameraExtension({
@@ -53,8 +53,11 @@ export class MainScene extends Scene3D {
       enabled: false
     });
     
-    this.lights.ambientLight();
-    
+    // this.lights.ambientLight();
+    this.lights.directionalLight({
+      color: 0xffffff,
+      intensity: 1,
+    })
     this.terrain.create(this);
     this.scene.add(this.terrain);
     
