@@ -1,0 +1,11 @@
+Model Information:
+* title:	Fantasy Sakura
+* source:	https://sketchfab.com/3d-models/fantasy-sakura-43f5b135e5af438cb706bbcb5bdf3cf1
+* author:	Sonia Martin (https://sketchfab.com/sonkiam)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Fantasy Sakura" (https://sketchfab.com/3d-models/fantasy-sakura-43f5b135e5af438cb706bbcb5bdf3cf1) by Sonia Martin (https://sketchfab.com/sonkiam) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

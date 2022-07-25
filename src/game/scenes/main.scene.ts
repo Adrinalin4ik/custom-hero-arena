@@ -26,7 +26,7 @@ export class MainScene extends Scene3D {
 
   async init() {
     this.renderer.setPixelRatio(1)
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(window.innerWidth, window.innerHeight - 50);
     // this.camera = this.cameras.perspectiveCamera({
     //   fov: 60,
     //   aspect: window.innerWidth / window.innerHeight,
@@ -46,7 +46,7 @@ export class MainScene extends Scene3D {
     // set up scene (light, ground, grid, sky, orbitControls)
     // this.warpSpeed()
     console.log(this)
-    this.warpSpeed('camera', '-fog', '-sky', '-light', '-ground')
+    this.warpSpeed('camera', '-fog', 'sky', '-light', '-ground')
 
     this.mouseCamera = new MouseCameraExtension({
       camera: this.camera as THREE.PerspectiveCamera,
@@ -64,8 +64,8 @@ export class MainScene extends Scene3D {
     this.scene.fog = new THREE.Fog(fogColor, 10, 300);
 
     // position camera
-    this.camera.position.set(0, 60, 40);
-    this.camera.lookAt(0, 0, 0);
+    this.camera.position.set(32, 80, 60);
+    this.camera.lookAt(32, 0, 32);
 
     this.clickHelper = new ClickHelper({
       objects: [this.terrain],

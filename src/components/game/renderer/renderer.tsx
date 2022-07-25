@@ -9,23 +9,19 @@ export interface IRendererState {
 }
 
 export class Renderer extends PureComponent<IRendererProps, IRendererState> {
-  private camera: THREE.PerspectiveCamera;
   private canvasRef = React.createRef<HTMLCanvasElement>();
-  private project: Project;
+  private renderer: THREE.WebGLRenderer;
 
   constructor(props: IRendererProps) {
     super(props);
     this.state = {
       loading: true
     }
-    this.camera = new THREE.PerspectiveCamera(60, this.aspectRatio, 2, 500);
-    this.camera.up.set(0, 0, 1);
-    this.camera.position.set(15, 0, 7);
   }
 
   componentDidMount() {
-    PhysicsLoader('/libs/ammo', () => {
-      const renderer = new THREE.WebGLRenderer({
+    PhysicsLoader('/libs/ammo', () => { 
+      this.renderer = new THREE.WebGLRenderer({
         alpha: true,
         antialias: true,
         stencil: false,
@@ -33,25 +29,25 @@ export class Renderer extends PureComponent<IRendererProps, IRendererState> {
         canvas: this.canvasRef.current!
       });
 
-      this.project = new Project({
+      new Project({
         scenes: [ MainScene ],
-        renderer,
+        renderer: this.renderer,
       });
       this.setState({ loading: false });
     });
   }
 
-  get aspectRatio() {
-    return window.innerWidth / window.innerHeight;
+  componentWillUnmount() {
+    this.renderer?.clear();
+    this.canvasRef?.current?.remove();
   }
 
   render() {
     return (
-      <div>
+      <div id='renderer'>
         <canvas
+          id="test"
           ref={this.canvasRef}
-          width='700' 
-          height='600'
         ></canvas>
       </div>
     )

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Gobble-Inn
+* source:	https://sketchfab.com/3d-models/gobble-inn-d423e8f645eb4fe98884bfd6b7ef2aec
+* author:	AislingJane (https://sketchfab.com/AislingJane)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Gobble-Inn" (https://sketchfab.com/3d-models/gobble-inn-d423e8f645eb4fe98884bfd6b7ef2aec) by AislingJane (https://sketchfab.com/AislingJane) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
