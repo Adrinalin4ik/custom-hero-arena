@@ -26,5 +26,5 @@ export const WorldObjects = [
     fbx: 'source/brick-wall.fbx',
     transparencyMap: 'textures/brick-wall-transparency.png',
     aoMap: 'textures/brick-wall-ao.png'
-  }
+  },
 ]

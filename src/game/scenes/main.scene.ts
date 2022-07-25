@@ -37,7 +37,7 @@ export class MainScene extends Scene3D {
 
   async preload() {
     // preload your assets here
-    await this.objectManager.preload();
+    // await this.objectManager.preload();
     await this.terrain.preload(this);
   }
 
