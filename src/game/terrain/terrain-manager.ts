@@ -14,7 +14,7 @@ export class Terrain extends Group {
   }
 
   async preload(scene: Scene3D) {
-    this.preparationZone.preload(scene);
+    await this.preparationZone.preload(scene);
   }
 
   async create(scene: Scene3D) {

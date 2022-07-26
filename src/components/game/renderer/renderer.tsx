@@ -28,13 +28,20 @@ export class Renderer extends PureComponent<IRendererProps, IRendererState> {
         powerPreference: 'high-performance',
         canvas: this.canvasRef.current!
       });
-
-      new Project({
+      
+      const project = new Project({
         scenes: [ MainScene ],
         renderer: this.renderer,
       });
-      this.setState({ loading: false });
+      const currentScene = project.scenes.get('MainScene') as MainScene;
+      currentScene.emitter.on('create:completed', this.onCreateCompleted.bind(this));
+      
     });
+  }
+
+  onCreateCompleted() {
+    console.log('Create is completed')
+    this.setState({ loading: false });
   }
 
   componentWillUnmount() {
@@ -44,7 +51,8 @@ export class Renderer extends PureComponent<IRendererProps, IRendererState> {
 
   render() {
     return (
-      <div id='renderer'>
+      <div id="renderer">
+        {this.state.loading && <h1>Loading scene...</h1>}
         <canvas
           id="test"
           ref={this.canvasRef}

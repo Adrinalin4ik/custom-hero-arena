@@ -1,4 +1,5 @@
-import { ExtendedObject3D, Scene3D } from 'enable3d';
+import { Scene3D } from 'enable3d';
+import EventEmitter from 'events';
 import * as THREE from 'three';
 import { MouseCameraExtension } from '../../cameras/mouse-camera';
 import { ClickHelper, IntersectionEvent, MouseBtn } from '../../helpers/click-manager';
@@ -6,13 +7,12 @@ import { ObjectManager } from '../objects/object-manager';
 import { Terrain } from '../terrain/terrain-manager';
 import { Player } from '../units/player.object';
 export class MainScene extends Scene3D {
-  private box: ExtendedObject3D;
   private mouseCamera: MouseCameraExtension;
   private clickHelper: ClickHelper;
   private player: Player;
   private terrain: Terrain = new Terrain();
   public objectManager: ObjectManager;
-  
+  public emitter = new EventEmitter();
   constructor() {
     super({
       key : 'MainScene'
@@ -33,19 +33,24 @@ export class MainScene extends Scene3D {
     //   near: 2,
     //   far: 1000,
     // });
+    this.emitter.emit('init:completed');
   }
 
   async preload() {
     // preload your assets here
     // await this.objectManager.preload();
+    await this.load.preload('sky-box', 'assets/models/dark-skybox/scene.gltf');
+    await this.load.preload('sky-box-texture', 'assets/models/dark-skybox/textures/Material__25__background_JPG_002_emissive.jpeg');
     await this.terrain.preload(this);
+    this.emitter.emit('preload:completed');
   }
-
+  
   async create() {
     // const camera = this.camera as PerspectiveCamera;
     // set up scene (light, ground, grid, sky, orbitControls)
     // this.warpSpeed()
     // console.log(this)
+    console.log('Everything is loaded');
     this.warpSpeed('camera', '-fog', 'sky', '-light', '-ground')
 
     this.mouseCamera = new MouseCameraExtension({
@@ -53,14 +58,31 @@ export class MainScene extends Scene3D {
       enabled: false
     });
     
-    // this.lights.ambientLight();
-    this.lights.directionalLight({
-      color: 0xffffff,
-      intensity: 1,
+    const spot = this.lights.spotLight({ 
+      color: '0xffffff', 
+      angle: Math.PI / 2,
     })
+    spot.position.set(100, 100, 0);
+    const spotHelper = this.lights.helper.spotLightHelper(spot)
+
+    // this.lights.ambientLight();
+    // const directionalLight = this.lights.directionalLight({
+    //   color: 0xffffff,
+    //   intensity: 1,
+    // });
+
+    // this.lights.helper.directionalLightHelper(directionalLight)
+    
+    const skyboxTexture = await this.load.texture('sky-box-texture');
+    this.scene.background = skyboxTexture;
+
+    // const skybox = await this.load.gltf('sky-box');
+    // this.scene.add(skybox.scene);
+
+
     this.terrain.create(this);
     this.scene.add(this.terrain);
-    
+      
 
     const fogColor = new THREE.Color(0xffffff);
     this.scene.background = fogColor; // Setting fogColor as the background color also
@@ -137,16 +159,30 @@ export class MainScene extends Scene3D {
     //     map: tree4Texture,
     //   });
 
-  //   tree4.traverse((child) => {
-  //     if ( child.isMesh ) {
-  //       child.material = tree4Material;
-  //     }
-  //   })
-  //   tree4Fbx.scale.set(0.005, 0.005, 0.005);  
-  //   this.scene.add(tree4);
-  //   tree4.position.set(10, 1, 0);
+    //   tree4.traverse((child) => {
+    //     if ( child.isMesh ) {
+    //       child.material = tree4Material;
+    //     }
+    //   })
+    //   tree4Fbx.scale.set(0.005, 0.005, 0.005);  
+    //   this.scene.add(tree4);
+    //   tree4.position.set(10, 1, 0);
+    console.log('emitting')
+    this.emitter.emit('create:completed');
   }
 
+  preRender() {
+    if (this.resizeRendererToDisplaySize()) {
+      // const canvas = this.renderer.domElement;
+      // this.camera = canvas.clientWidth / canvas.clientHeight;
+      this.camera.updateProjectionMatrix();
+    }
+    this.emitter.emit('preRender:completed');
+  }
+  
+  postRender() {
+    this.emitter.emit('postRender:completed');
+  }
   
 
   update(timeFromStart: number, diff: number) {
@@ -154,4 +190,15 @@ export class MainScene extends Scene3D {
     this.player.update(diff);
   }
 
+  
+  resizeRendererToDisplaySize() {
+    const canvas = this.canvas;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+      this.setSize(width, height - 50);
+    }
+    return needResize;
+  }
 }

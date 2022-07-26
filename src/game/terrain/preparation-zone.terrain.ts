@@ -1,6 +1,5 @@
 import { Scene3D } from "enable3d";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { CustomObject3D } from "../../extensions/object3d";
 
 export class PreparationZone extends THREE.Group {
@@ -9,7 +8,7 @@ export class PreparationZone extends THREE.Group {
   async preload(scene: Scene3D) {
     // scene.load.preload('grass', '/assets/img/grass.jpg');
     // scene.load.preload('castle', 'assets/models/gltf/scene.gltf');
-    scene.load.preload('test', 'assets/models/main.glb');
+    await scene.load.preload('main-scene', 'assets/models/main.glb');
   }
 
   async create(scene: Scene3D) {
@@ -33,15 +32,20 @@ export class PreparationZone extends THREE.Group {
     // -------------------------------------------------
     // Object
 
-    // const obj = await scene.load.gltf('castle');
-    // this.add(obj.scene);
-    const loader = new GLTFLoader();
-    const obj = await loader.load('assets/models/main.glb', (obj) => {
-      // const mixer = scene.animationMixers.create(obj.scene);
-      console.log(obj)
-      // mixer.clipAction(obj.animations[0]).play();
+    const obj = await scene.load.gltf('main-scene');
+    this.add(obj.scene);
+    // const loader = new GLTFLoader();
+    // await loader.load('assets/models/main.glb', (obj) => {
+    //   // const mixer = scene.animationMixers.create(obj.scene);
+    //   console.log(obj)
+    //   // mixer.clipAction(obj.animations[0]).play();
       
-      this.add(obj.scene);
-    });
+    //   this.add(obj.scene);
+    // }, (event: ProgressEvent) => {
+    //   console.log(event)
+    //   console.log( ( event.loaded / event.total * 100 ) + '% loaded' );
+    // }, (error) => {
+    //   console.log( 'An error happened while loading assets/models/main.glb', error);
+    // });
   }
 }
